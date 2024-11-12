@@ -1,13 +1,13 @@
 ﻿import requests
 import json
 
-# Kinda Utils
-def extract_data(get,data):
-    return data[get]
+# Simple Implementation of the Modrinth Api 
+# Spagetti Code 
 
+# Used to make requests 
 def make_modrinth_request(endpoint):
     try:
-        response = requests.get(f"https://api.modrinth.com/v2/{endpoint}")
+        response = requests.get(f"https://api.modrinth.com{endpoint}")
         if not response.ok:
             print("Api Error")
             return None
@@ -15,22 +15,37 @@ def make_modrinth_request(endpoint):
     except (requests.RequestException, json.JSONDecodeError):
         return None
 
-def get_mod_data(mod):
-    return make_modrinth_request(f"project/{mod}")
+# Kinda useless but why not
+def get_modrinth_api_version():
+    respone = make_modrinth_request("")
+    return respone["version"]
 
-def get_mod_versions(mod):
-    return make_modrinth_request(f"project/{mod}/version")
-
-def extract_mod_download_url(version,loader,version_data):
-    if version in version_data["game_versions"]:
-        if loader in version_data["loaders"]:
-            # TODO - Fix
-            return version_data["files"][0]["url"]
-        else:
-            print(f"Loader: {loader}, not found")
+# Default Request Per Min 300
+def get_remaining_requests():
+    try:
+        response = requests.get(f"https://api.modrinth.com/")
+        if not response.ok:
+            print("Api Error")
             return None
-    else:
-        print(f"Version: {version}, not found")
+        else:
+            return response.headers["x-ratelimit-remaining"]
+    except (requests.RequestException, json.JSONDecodeError):
         return None
 
-extract_mod_download_url("1.20","fabric",get_mod_versions("jade"))
+def get_mod_data(mod):
+    return make_modrinth_request(f"/v2/project/{mod}")
+
+def get_mod_versions(mod):
+    return make_modrinth_request(f"v2/project/{mod}/version")
+
+def extract_mod_versions(mod_data):
+    return mod_data["game_versions"]
+
+def extract_mod_loaders(mod_data):
+    return mod_data["loaders"]
+
+def extract_mod_url(version,loader,version_data,mod_data):
+    # TODO - Fix
+    pass
+
+print(get_remaining_requests())
