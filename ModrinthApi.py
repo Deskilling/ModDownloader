@@ -35,8 +35,8 @@ def get_remaining_requests():
 def get_mod_data(mod):
     return make_modrinth_request(f"/v2/project/{mod}")
 
-def get_mod_versions(mod):
-    return make_modrinth_request(f"v2/project/{mod}/version")
+def get_mod_versions_data(mod):
+    return make_modrinth_request(f"/v2/project/{mod}/version")
 
 def extract_mod_versions(mod_data):
     return mod_data["game_versions"]
@@ -44,8 +44,11 @@ def extract_mod_versions(mod_data):
 def extract_mod_loaders(mod_data):
     return mod_data["loaders"]
 
-def extract_mod_url(version,loader,version_data,mod_data):
-    # TODO - Fix
-    pass
-
-print(get_remaining_requests())
+# Realtalk wenn hier ein Error passiert dann juckt
+# Kein Errol logging mfg
+def extract_mod_url(version,loader,version_data):
+    for i in version_data:
+        if version in i.get("game_versions",[]):
+            if loader in i.get("loaders",[]):
+                for file in i.get("files",[]):
+                    return file.get("url")
