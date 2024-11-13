@@ -1,0 +1,11 @@
+{
+    "version": "1.21",
+    "loader": "fabric",
+    "mods": [
+        "sodium",
+        "krypton",
+        "fabric-api",
+        "optifine",
+        "lithium"
+    ]
+}
