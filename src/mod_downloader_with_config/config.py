@@ -1,12 +1,15 @@
-import os 
+import json
+import os
+
 
 def generate_config():
     pass
 
+# Hääääää
+# Is richtig Arsch aber juckt
 def check_config():
     if os.path.exists("src/mod_downloader_with_config/config.json"):
         print("Found Config")
-        file = open("src/mod_downloader_with_config/config.json").read()
         return True
     else:
         print("Missing Config")
@@ -17,14 +20,31 @@ def check_config():
         print("Created Config")
         return True
 
-def write_config(what,where):
-    file = open("src/mod_downloader_with_config/config.json","w")
-    file[where].write(what)
+
+# Clean wie die Sneaks von Red
+def update_config(version=None, loader=None, mods=None):
+    config = {
+        "version": "",
+        "loader": "",
+        "mods": []
+    }
+    try:
+        with open("src/mod_downloader_with_config/config.json", 'r') as file:
+            config.update(json.load(file))
+    except FileNotFoundError:
+        pass
+
+    if version is not None and loader is not None and mods is not None:
+        config["version"] = version
+        config["loader"] = loader
+        config["mods"] = mods.split()
+
+    with open("src/mod_downloader_with_config/config.json", 'w') as file:
+        json.dump(config, file, indent=4)
 
 def get_input():
     version = input("Version: ")
     loader = input("Loader: ")
-    mods = input("Your mods Example: mods, lithium, fabric-api: ")
+    mods = input("Your mods Example: sodium lithium fabric-api: ")
 
-check_config()
-write_config("1.21","version")
+    return version,loader,mods
