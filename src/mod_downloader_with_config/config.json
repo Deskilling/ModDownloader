@@ -3,9 +3,10 @@
     "loader": "fabric",
     "mods": [
         "sodium",
-        "krypton",
+        "lithium",
         "fabric-api",
+        "krypton",
         "optifine",
-        "lithium"
+        "zoomify"
     ]
 }

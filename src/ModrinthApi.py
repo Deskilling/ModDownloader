@@ -1,5 +1,6 @@
 ﻿from time import gmtime, strftime
 import requests
+import hashlib
 import json
 import os
 
@@ -41,25 +42,30 @@ def get_remaining_requests():
     except (requests.RequestException, json.JSONDecodeError):
         return None
 
+# Auf lecker schmecker
 def get_mod_data(mod):
     request = make_modrinth_request(f"/v2/project/{mod}")
     if request is None:
         return None
     return request
 
+# get all mod versions
 def extract_mod_versions(mod_data):
     return mod_data["game_versions"]
 
+# version data
 def get_mod_versions_data(mod):
     request = make_modrinth_request(f"/v2/project/{mod}/version")
     if request is None:
         return None
     return request
 
+# alle loader halt lecker schmecker
 def extract_mod_loaders(mod_data):
     return mod_data["loaders"]
 
 # Prints should be useless
+# Der macht mich Sauer
 def extract_mod_url(version,loader,version_data):
     for i in version_data:
         if version in i.get("game_versions",[]):
@@ -73,10 +79,10 @@ def extract_mod_url(version,loader,version_data):
             print(f"Version {version} not Found")
             return None, None
 
-def download_from_url(url,mod_name):
-    os.makedirs(f"output/{datum}", exist_ok=True)
-    file_path = os.path.join(f"output/{datum}", mod_name)
-
+# downloaded den aal auf versneakten Hasen in /output/datum/
+def download_from_url(url,mod_name,path):
+    os.makedirs(f"{path}_{datum}", exist_ok=True)
+    file_path = os.path.join(f"{path}_{datum}", mod_name)
     response = requests.get(url)
     # 200 ist Cringe .ok ist cooler mfg
     if response.ok:
@@ -85,7 +91,20 @@ def download_from_url(url,mod_name):
     else:
         print(f"Error Downloading File: {mod_name}, Url: {url}")
 
-def download_mod(mod,version,loader):
+# sha1 from file 
+def sha1sum(filename,path):
+    filename = path + filename
+    with open(filename, 'rb', buffering=0) as f:
+        return hashlib.file_digest(f, 'sha1').hexdigest()
+
+# just get hash and requests auf lecker
+def download_via_hash(hashed_file, version, loader):
+    response = make_modrinth_request(f"/v2/version_file/{hashed_file}")
+    project_id = response["project_id"]
+    download_mod(project_id,version,loader,"output/updated_hash")
+
+# download mod without hash lecker hush
+def download_mod(mod,version,loader,path):
     mod_data = get_mod_data(mod)
     if mod_data is None:
         print(f"Error getting {mod} data")
@@ -116,4 +135,4 @@ def download_mod(mod,version,loader):
         return mod
 
     print(f"Downloading: {filename}")
-    download_from_url(url,filename)
+    download_from_url(url,filename,path)
