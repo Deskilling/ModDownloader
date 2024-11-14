@@ -1,35 +1,31 @@
 ﻿from ModrinthApi import download_mod
-from mod_downloader_with_config.config import check_config, get_input, update_config
+import mod_downloader_with_config.config as config
 import json
 
 def download_from_config():
-    with open('src/mod_downloader_with_config/config.json', 'r') as file:
-        config = json.load(file)
-        version = config.get("version",[])
-        loader = config.get("loader",[])
-        mods = config.get("mods",[])
-        print(f"\n{version}")
-        print(loader)
-        print(mods)
+    with open('mod_downloader_with_config/config.json', 'r') as file:
+        config_data = json.load(file)
+        version = config_data.get("version", "")
+        loader = config_data.get("loader", "")
+        mods = config_data.get("mods", [])
 
-        failedDownloads = []
-        for i in range(len(mods)):
-            output = download_mod(mods[i],version,loader,"output/config_download/")
+        failed_downloads = []
+        for mod in mods:
+            output = download_mod(mod, version, loader, "../output/config_download/")
+            if output == mod:
+                failed_downloads.append(output)
 
-            if output is mods[i]:
-                failedDownloads.append(output)
-
-        print(f"\n\nFinished Downloading")
-        if failedDownloads is not None:
-            print(f"Failed to Download {failedDownloads}")
+        print("\n\nFinished Downloading")
+        if failed_downloads:
+            print(f"Failed to Download {failed_downloads}")
 
 def main():
-    check_config()
+    config.check_config()
 
     keep_config = input("Enter via Terminal? (This will overwrite your current config) \n(you can also edit the config.json)  y/n: ")
     if keep_config.lower() == "y":
-        version, loader, mods = get_input()
-        update_config(version,loader,mods)
+        version, loader, mods = config.get_input()
+        config.update_config(version, loader, mods)
     elif keep_config.lower() == "n":
         pass
     else:

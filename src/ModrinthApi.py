@@ -60,12 +60,12 @@ def get_mod_versions_data(mod):
         return None
     return request
 
-# alle loader halt lecker schmecker
+# alle loader halt locker checker
 def extract_mod_loaders(mod_data):
     return mod_data["loaders"]
 
 # Prints should be useless
-# Der macht mich Sauer
+# Der macht mich Saver
 def extract_mod_url(version,loader,version_data):
     for i in version_data:
         if version in i.get("game_versions",[]):
@@ -73,35 +73,44 @@ def extract_mod_url(version,loader,version_data):
                 for file in i.get("files",[]):
                     return file.get("url"), file.get("filename")
             else:
-                print(f"Loader: {loader} not Found")
+                print(f"Loader: {loader} not Found, Version_data: {version_data}")
                 return None, None
         elif version not in version:
-            print(f"Version {version} not Found")
+            print(f"Version {version} not Found, Version_data: {version_data}")
             return None, None
 
 # downloaded den aal auf versneakten Hasen in /output/datum/
-def download_from_url(url,mod_name,path):
-    os.makedirs(f"{path}_{datum}", exist_ok=True)
-    file_path = os.path.join(f"{path}_{datum}", mod_name)
+def download_from_url(url, mod_name, path):
+    # Create the target directory if it doesn't exist
+    full_path = os.path.join(path + "_" + datum)
+    os.makedirs(full_path, exist_ok=True)
+
+    # Set the complete file path
+    file_path = os.path.join(full_path, mod_name)
+
+    # Download the file
     response = requests.get(url)
-    # 200 ist Cringe .ok ist cooler mfg
     if response.ok:
         with open(file_path, 'wb') as file:
             file.write(response.content)
+        print(f"Downloaded: {file_path}")
     else:
-        print(f"Error Downloading File: {mod_name}, Url: {url}")
+        print(f"Error Downloading File: {mod_name}, URL: {url}")
 
 # sha1 from file 
 def sha1sum(filename,path):
     filename = path + filename
     with open(filename, 'rb', buffering=0) as f:
-        return hashlib.file_digest(f, 'sha1').hexdigest()
+        return hashlib.file_digest(f, 'sha512').hexdigest()
 
 # just get hash and requests auf lecker
 def download_via_hash(hashed_file, version, loader):
     response = make_modrinth_request(f"/v2/version_file/{hashed_file}")
+    if response is None:
+        print(f"Failed Download Hash:{hashed_file}, Version {version}, Loader {loader}")
+        return None
     project_id = response["project_id"]
-    download_mod(project_id,version,loader,"output/updated_hash")
+    return download_mod(project_id,version,loader,"../output/updated_hash")
 
 # download mod without hash lecker hush
 def download_mod(mod,version,loader,path):

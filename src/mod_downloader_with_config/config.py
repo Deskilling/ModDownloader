@@ -4,7 +4,7 @@ import os
 # Hääääää
 # Is richtig Arsch aber juckt
 def check_config():
-    if os.path.exists("src/mod_downloader_with_config/config.json"):
+    if os.path.exists("mod_downloader_with_config/config.json"):
         print("Found Config")
     else:
         print("Missing Config")
