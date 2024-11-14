@@ -1,29 +1,28 @@
-# Add ModinthApi depedencies 
-# TODO - Fix every import | Errors due working dir
-import ModrinthApi 
+import src.ModrinthApi
 import os
 
-def get_all_mods():
-    all_files = os.listdir("../../update_mods")
+def get_input():
+    version = input("Version: ")
+    loader = input("Loader: ")
+
+    return version,loader
+
+def update_all_mods(version,loader):
+    all_files = os.listdir("update_mods/")
     all_hashes = []
 
     for i in range(len(all_files)):
-        print(os.getcwd())
-        all_hashes.append(ModrinthApi.sha1sum(all_files[i],"update_mods/"))
-
+        all_hashes.append(src.ModrinthApi.sha1sum(all_files[i],"update_mods/"))
+        src.ModrinthApi.download_via_hash(all_hashes[i], version, loader)
     print(all_hashes)
 
 def check_dir():
-    if os.path.exists("src/update_mods"):
+    if os.path.exists("update_mods"):
         return True
     else:
-        os.mkdir("src/update_mods")
-
-def download_mod():
-    pass
-
-def info():
-    input("Place all Mods you want to update in /update_mods/ \nWhen you are ready press Enter:")
-
-check_dir()
-get_all_mods()
+        os.mkdir("update_mods")
+def main():
+    check_dir()
+    version, loader = get_input()
+    input("Press Enter to Update every mod in update_mods ")
+    update_all_mods(version,loader)

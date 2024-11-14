@@ -14,7 +14,7 @@ def download_from_config():
 
         failedDownloads = []
         for i in range(len(mods)):
-            output = download_mod(mods[i],version,loader)
+            output = download_mod(mods[i],version,loader,"output/config_download/")
 
             if output is mods[i]:
                 failedDownloads.append(output)
