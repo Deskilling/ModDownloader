@@ -73,11 +73,12 @@ def extract_mod_url(version,loader,version_data):
                 for file in i.get("files",[]):
                     return file.get("url"), file.get("filename")
             else:
-                print(f"Loader: {loader} not Found, Version_data: {version_data}")
-                return None, None
+                print(f"Loader: {loader} not Found")
+                continue
         elif version not in version:
-            print(f"Version {version} not Found, Version_data: {version_data}")
-            return None, None
+            print(f"Version {version} not Found")
+
+    return None, None
 
 # downloaded den aal auf versneakten Hasen in /output/datum/
 def download_from_url(url, mod_name, path):
@@ -110,6 +111,7 @@ def download_via_hash(hashed_file, version, loader):
         print(f"Failed Download Hash:{hashed_file}, Version {version}, Loader {loader}")
         return None
     project_id = response["project_id"]
+
     return download_mod(project_id,version,loader,"../output/updated_hash")
 
 # download mod without hash lecker hush
