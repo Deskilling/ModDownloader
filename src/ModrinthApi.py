@@ -8,9 +8,11 @@ import os
 # Spagetti Code 
 
 # Used for output directory
+# TODO - Use pc time because different time eumler
 datum = strftime("%d_%m_%Y_%H-%M-%S", gmtime())
 
 # Used to make requests 
+# Example: /v2/project/sodium ; /v2/version_file/{hash}
 def make_modrinth_request(endpoint):
     try:
         response = requests.get(f"https://api.modrinth.com{endpoint}")
@@ -50,22 +52,27 @@ def get_mod_data(mod):
     return request
 
 # get all mod versions
+# from get_mod_data()
 def extract_mod_versions(mod_data):
     return mod_data["game_versions"]
 
 # version data
 def get_mod_versions_data(mod):
     request = make_modrinth_request(f"/v2/project/{mod}/version")
+    # TODO - What da heeeel
     if request is None:
         return None
     return request
 
 # alle loader halt locker checker
+# TODO - Check for specific cases for project that switched loaders 
+# Example Jade, glaube
 def extract_mod_loaders(mod_data):
     return mod_data["loaders"]
 
 # Prints should be useless
-# Der macht mich Saver
+# Der macht mich Sauer
+# TODO - Den Eumler besser machen (vllt version_data formaten)
 def extract_mod_url(version,loader,version_data):
     for i in version_data:
         if version in i.get("game_versions",[]):
@@ -85,7 +92,6 @@ def download_from_url(url, mod_name, path):
     # Create the target directory if it doesn't exist
     full_path = os.path.join(path + "_" + datum)
     os.makedirs(full_path, exist_ok=True)
-
     # Set the complete file path
     file_path = os.path.join(full_path, mod_name)
 
@@ -98,13 +104,16 @@ def download_from_url(url, mod_name, path):
     else:
         print(f"Error Downloading File: {mod_name}, URL: {url}")
 
-# sha1 from file 
+# sha1 from file
+# sha512 geht auch 
 def sha1sum(filename,path):
     filename = path + filename
     with open(filename, 'rb', buffering=0) as f:
         return hashlib.file_digest(f, 'sha512').hexdigest()
 
 # just get hash and requests auf lecker
+# TODO - Return file name error 
+# TODO - Fix muss prob in mod_file_updater gemacht werden
 def download_via_hash(hashed_file, version, loader):
     response = make_modrinth_request(f"/v2/version_file/{hashed_file}")
     if response is None:
@@ -115,6 +124,7 @@ def download_via_hash(hashed_file, version, loader):
     return download_mod(project_id,version,loader,"../output/updated_hash")
 
 # download mod without hash lecker hush
+# TODO - Dieses goofy ass if xxx is None: irgendwie besser machen, aber geht so eig fit
 def download_mod(mod,version,loader,path):
     mod_data = get_mod_data(mod)
     if mod_data is None:

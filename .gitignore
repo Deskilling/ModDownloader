@@ -1,6 +1,7 @@
 .idea/
 output/
 update_mods/
+modpacks/
 
 **/__pycache__/
 *.pyc

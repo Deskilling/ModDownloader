@@ -1,6 +1,8 @@
 @echo off
 setlocal
 
+::TODO - Refactor everything
+
 REM Set the version and download path
 set PYTHON_VERSION=3.11.6
 set DOWNLOAD_URL=https://www.python.org/ftp/python/%PYTHON_VERSION%/python-%PYTHON_VERSION%-amd64.exe
