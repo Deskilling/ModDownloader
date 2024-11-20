@@ -56,6 +56,10 @@ def get_mod_data(mod):
 def extract_mod_versions(mod_data):
     return mod_data["game_versions"]
 
+# Uses mod_data as input (bin Eumler)
+def extract_mod_loaders(mod_data):
+    return mod_data["loaders"]
+
 # version data
 def get_mod_versions_data(mod):
     request = make_modrinth_request(f"/v2/project/{mod}/version")
@@ -64,15 +68,10 @@ def get_mod_versions_data(mod):
         return None
     return request
 
-# alle loader halt locker checker
-# TODO - Check for specific cases for project that switched loaders 
-# Example Jade, glaube
-def extract_mod_loaders(mod_data):
-    return mod_data["loaders"]
-
 # Prints should be useless
 # Der macht mich Sauer
 # TODO - Den Eumler besser machen (vllt version_data formaten)
+# nö
 def extract_mod_url(version,loader,version_data):
     for i in version_data:
         if version in i.get("game_versions",[]):

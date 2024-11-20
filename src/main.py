@@ -3,8 +3,10 @@ import mod_downloader_with_config.mod_downloader as mod_downloader
 import mod_file_updater.update_via_hash as update_via_hash
 import modpack_down_updater.modpacks as modpacks
 import ModrinthApi
+from src.ModrinthApi import get_mod_data, get_mod_versions_data, extract_mod_loaders
 
-# to make sure execution is happening in /src 
+
+# to make sure execution is happening in /src
 # to fix import and directories
 # IMMER EXECUTEN SONST TROLLT ALLES
 
