@@ -1,20 +1,31 @@
-﻿import requests, json
+﻿import requests, json, os
+from libaries import util
 
 def make_modrinth_request(endpoint):
     try:
         response = requests.get(f"https://api.modrinth.com{endpoint}")
         if not response.ok:
-            print(f"Api Error on Endpoint {endpoint}")
+            util.log(f"Api Error on Endpoint {endpoint}")
             return None
         return response.json()
     except (requests.RequestException, json.JSONDecodeError):
-        print(f"Request or JsonDecodeError {endpoint}")
+        util.log(f"Request or JsonDecodeError {endpoint}")
         return None
 
 def get_loader_and_versions(mod):
-    response = make_modrinth_request(f"/v2/project/{mod}/version")
+    response = make_modrinth_request(f"/v2/project/{mod}")
     return response["game_versions"], response["loaders"]
 
-def get_mod_downloader(mod):
+def get_mod_downloader(mod,version,loader):
     response = make_modrinth_request(f"/v2/project/{mod}/version")
-    return response["files"]["url"]
+
+    if response is None:
+        util.log(f"Mod: {mod}, Version: {version}, Loader {loader} not found")
+        return f"Mod: {mod}, Version: {version}, Loader {loader} not found"
+
+    for i in response:
+        if version in i.get("game_versions",[]):
+            if loader in i.get("loaders",[]):
+                for file in i.get("files",[]):
+                    return file.get("url"), file.get("filename")
+
