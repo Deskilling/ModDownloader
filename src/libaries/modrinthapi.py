@@ -1,4 +1,4 @@
-﻿import requests, json, os
+﻿import requests, json
 from libaries import util
 
 def make_modrinth_request(endpoint):
@@ -40,28 +40,15 @@ def get_mod_download_url(mod,version,loader):
                     return url, file_name
 
 def get_download_via_hash(hash,version,loader):
-    response = make_modrinth_request(f"v2/version_file/{hash}")
+    response = make_modrinth_request(f"/v2/version_file/{hash}")
 
     if response is None:
         util.log(f"Hash: {hash} not found")
-        return None
+        print(f"Hash: {hash} not found")
+        return None, None
 
     project_id = response["project_id"]
     util.log(f"Hash: {hash}, Project_id {project_id}")
-    url = get_mod_download_url(project_id,version,loader)
+    url, file_name = get_mod_download_url(project_id,version,loader)
     util.log(f"Url: {url}")
-    return url
-
-def get_all_hashes():
-    util.check_path("../../mods_to_update")
-    hashes = []
-
-    for i in os.listdir("../../mods_to_update"):
-        hashes.append(util.sha1sum(i,"../../mods_to_update"))
-
-def cli_download():
-    mod = input("Mod Name: ")
-    version = input("Version: ")
-    loader = input("Loader: ")
-    url, file_name = get_mod_download_url(mod,version,loader)
-    util.download_from_url(url,"../../mods",file_name)
+    return url, file_name
