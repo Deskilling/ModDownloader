@@ -5,10 +5,10 @@ import os
 def cli_update_mods():
     util.cls()
 
-    version = "1.21.3"#input("Enter Version for the Mods: ")
+    version = input("Enter Version for the Mods: ")
     util.log(f"Version: {version}")
 
-    loader = "fabric"#input("Enter Loader for the Mods: ")
+    loader = input("Enter Loader for the Mods: ")
     util.log(f"Loader: {loader}")
 
     util.cls()
