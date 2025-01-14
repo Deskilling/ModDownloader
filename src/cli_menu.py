@@ -33,8 +33,6 @@ def cli_update_mods():
     
     for i in all_hashes:
         url, file_name = modrinthapi.get_download_via_hash(i,version,loader)
-        
-        
 
         if url is None or file_name is None:
             failed_file = all_hashes_filenames[all_hashes.index(i)]
