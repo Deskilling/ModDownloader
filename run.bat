@@ -1,58 +1,28 @@
 @echo off
 setlocal
 
-::TODO - Refactor everything
+REM Define the Python directory
+set "pythonDir=%~dp0python"
+set "pythonExe=%pythonDir%\python.exe"
 
-REM Set the version and download path
-set PYTHON_VERSION=3.11.6
-set DOWNLOAD_URL=https://www.python.org/ftp/python/%PYTHON_VERSION%/python-%PYTHON_VERSION%-amd64.exe
-set INSTALL_DIR=%cd%\python
-set SCRIPT_PATH=%cd%\src\main.py
-
-REM Check if the python directory exists, create if not
-if not exist "%INSTALL_DIR%" mkdir "%INSTALL_DIR%"
-
-REM Download Python installer
-echo Downloading Python %PYTHON_VERSION%...
-curl -o python_installer.exe %DOWNLOAD_URL%
-if %errorlevel% neq 0 (
-    echo Failed to download Python installer.
-    exit /b 1
+REM Check if Python is already installed
+if exist "%pythonExe%" (
+    echo Python is already installed in %pythonDir%.
+) else (
+    echo Python is not installed. Downloading and installing Python...
+    REM Create a directory for Python in the same directory as run.bat
+    mkdir "%pythonDir%"
+    REM Download Python installer
+    powershell -Command "Invoke-WebRequest -Uri https://www.python.org/ftp/python/3.13.1/python-3.13.1.exe -OutFile %pythonDir%\python-installer.exe"
+    REM Install Python silently
+    "%pythonDir%\python-installer.exe" /quiet InstallAllUsers=1 PrependPath=0 TargetDir="%pythonDir%"
+    REM Clean up installer
+    del "%pythonDir%\python-installer.exe"
+    echo Python has been installed to %pythonDir%.
 )
 
-REM Install Python to the specified directory
-echo Installing Python to %INSTALL_DIR%...
-python_installer.exe /quiet InstallAllUsers=0 TargetDir="%INSTALL_DIR%" Include_launcher=0
-if %errorlevel% neq 0 (
-    echo Failed to install Python.
-    del python_installer.exe
-    exit /b 1
-)
-
-REM Clean up installer
-del python_installer.exe
-echo Python installed successfully in %INSTALL_DIR%.
-
-REM Add Python installation to PATH temporarily
-set PATH=%INSTALL_DIR%;%PATH%
-
-REM Install required Python packages
-echo Installing required Python packages...
-python -m pip install --upgrade pip
-python -m pip install requests
-if %errorlevel% neq 0 (
-    echo Failed to install required packages.
-    exit /b 1
-)
-
-REM Change directory to the Python installation folder and run the script
-cd /d "%INSTALL_DIR%"
-cls
-echo Running main.py script from %SCRIPT_PATH%...
-python "%SCRIPT_PATH%"
-if %errorlevel% neq 0 (
-    echo Failed to run main.py.
-    exit /b 1
-)
+%pythonExe% -m pip install -r requirements.txt
+%pythonExe% src/main.py
 
 endlocal
+pause
