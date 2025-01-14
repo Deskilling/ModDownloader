@@ -26,7 +26,7 @@ def get_mod_download_url(mod,version,loader):
     response = make_modrinth_request(f"/v2/project/{mod}/version")
     if response is None:
         util.log(f"Mod: {mod}, Version: {version}, Loader {loader} not found")
-        return f"Mod: {mod}, Version: {version}, Loader: {loader} not found"
+        return None, None
 
     for i in response:
         if version in i.get("game_versions",[]) and loader in i.get("loaders",[]):
