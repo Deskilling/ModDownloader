@@ -6,13 +6,10 @@ def main():
     util.change_exec_dir()
     util.create_logfile()
 
-    util.log("Apored")
-    util.log("Gommehd")
+    modrinthapi.get_all_hashes()
+    #modrinthapi.cli_download()
 
-
-    #versions, loaders = modrinthapi.get_loader_and_versions("sodium")
-
-    print(modrinthapi.get_mod_downloader("eumelcrafter","1.21.1","fabric"))
-
+    util.log("Finished Main")
     print("Finished Main")
+    
 main()

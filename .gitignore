@@ -1,2 +1,5 @@
 .idea/
 logs/
+src/libaries/__pycache__/
+mods_to_update/
+output/
