@@ -28,7 +28,7 @@ def cli_update_mods():
     failed_downloadhashes = []
     failed_files = []
 
-    min = 0
+    min = 1
     max = len(all_hashes)
     
     for i in all_hashes:
@@ -60,6 +60,8 @@ def cli_update_mods():
         for i in failed_files:
             print(i)
             util.log(i) 
+        
+        input("\nPress Enter to continue ")
 
 def cli_main():
     util.cls()
@@ -71,5 +73,6 @@ def cli_main():
 
     if option == "1":
         cli_update_mods()
+        return True
     elif option == "2":
-        exit()
+        return False        

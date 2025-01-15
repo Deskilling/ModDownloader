@@ -38,6 +38,9 @@ def get_mod_download_url(mod,version,loader):
                     util.log(f"Url: {url}")
                     util.log(f"File Name: {file_name} \n")
                     return url, file_name
+        else:
+            util.log(f"Mod: {mod}, Version: {version}, Loader {loader} not found")
+            return None, None
 
 def get_download_via_hash(hash,version,loader):
     response = make_modrinth_request(f"/v2/version_file/{hash}")
@@ -50,5 +53,9 @@ def get_download_via_hash(hash,version,loader):
     project_id = response["project_id"]
     util.log(f"Hash: {hash}, Project_id {project_id}")
     url, file_name = get_mod_download_url(project_id,version,loader)
+
+    if url is None or file_name is None:
+        return None, None
+
     util.log(f"Url: {url}")
     return url, file_name
