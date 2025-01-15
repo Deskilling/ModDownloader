@@ -32,6 +32,12 @@ def cli_update_mods():
     max = len(all_hashes)
     
     for i in all_hashes:
+        util.cls()
+
+        kriminelles_level = '.' * (max - min)
+        kriminelles_level = '#' * min + kriminelles_level[max:]
+        print(f"{min}/{max} [{kriminelles_level}]")
+
         url, file_name = modrinthapi.get_download_via_hash(i,version,loader)
 
         if url is None or file_name is None:
@@ -46,12 +52,7 @@ def cli_update_mods():
             print(f"Downloading: {file_name}")
             util.log(f"Downloading: {file_name}")
             util.download_from_url(url,"../../output/",file_name)
-
-        util.cls()
         
-        kriminelles_level = '.' * (max - min)
-        kriminelles_level = '#' * min + kriminelles_level[max:]
-        print(f"{min}/{max} [{kriminelles_level}]")
         min += 1
 
     if len(failed_downloadhashes) > 0:

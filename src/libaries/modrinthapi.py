@@ -38,9 +38,9 @@ def get_mod_download_url(mod,version,loader):
                     util.log(f"Url: {url}")
                     util.log(f"File Name: {file_name} \n")
                     return url, file_name
-        else:
-            util.log(f"Mod: {mod}, Version: {version}, Loader {loader} not found")
-            return None, None
+    else:
+        util.log(f"Mod: {mod}, Version: {version}, Loader {loader} not found")
+        return None, None
 
 def get_download_via_hash(hash,version,loader):
     response = make_modrinth_request(f"/v2/version_file/{hash}")
