@@ -1,4 +1,4 @@
-import os, requests, hashlib
+import os, requests, hashlib, zipfile
 from time import gmtime, strftime
 
 log_filepath = "../../logs/" + strftime("%Y-%b-%d_%H-%M-%S", gmtime()) + ".log"
@@ -13,7 +13,7 @@ def create_logfile():
 def log(was):
     time = f"[{strftime("%d_%b_%Y_%H-%M-%S", gmtime())}]"
     file = open(log_filepath,"a")
-    file.write(f"\n{time}: {was}")
+    file.write(f"\n{time}: {was}")
 
 def cls():
     os.system("cls" if os.name=="nt" else "clear")
@@ -60,3 +60,15 @@ def download_from_url(url, path, file_name):
         with open(file_path, 'wb') as file:
             file.write(response.content)
         print(f"Downloaded: {file_path}")
+
+def extract_zip(path_zip, path_extract):
+    with zipfile.ZipFile(path_zip, 'r') as zip_ref:
+        zip_ref.extractall(path_extract)
+
+def listdir(path):
+    # Bruh
+    return os.listdir(path)
+
+def read_file(path):
+    with open(path, "r") as file:
+        return file.read()

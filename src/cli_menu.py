@@ -1,5 +1,4 @@
-from libaries import util
-from libaries import modrinthapi
+from libaries import util, modrinthapi, modpack
 import os
 
 def cli_update_mods():
@@ -25,55 +24,43 @@ def cli_update_mods():
     util.log("Getting all hashes")
     all_hashes, all_hashes_filenames = util.get_all_hashes("../../mods_to_update/")
     
-    failed_downloadhashes = []
-    failed_files = []
+    modpack.download_multiple_hashes(all_hashes,all_hashes_filenames,version,loader)
 
-    min = 1
-    max = len(all_hashes)
+def cli_update_modpack():
+    util.cls()
+    util.check_path("../../modpacks")
+    util.log("modpacks folder checked or created")
     
-    for i in all_hashes:
-        util.cls()
+    choosen_modpack = modpack.choose_modpack()
+    modpack.extract_modpack(choosen_modpack)
 
-        kriminelles_level = '.' * (max - min)
-        kriminelles_level = '#' * min + kriminelles_level[max:]
-        print(f"{min}/{max} [{kriminelles_level}]")
+    util.log("Getting all hashes")
+    all_hashes, all_hashes_filenames = modpack.get_all_hashes()
 
-        url, file_name = modrinthapi.get_download_via_hash(i,version,loader)
+    version = input("Enter Version for the Mods: ")
+    util.log(f"Version: {version}")
 
-        if url is None or file_name is None:
-            failed_file = all_hashes_filenames[all_hashes.index(i)]
-            print(f"Error downloading: {failed_file}")
-            print(f"Error downloading hash: {i}")
-            util.log(f"Error downloading: {failed_file}")
-            util.log(f"Error downloading hash: {i}")
-            failed_downloadhashes.append(i)
-            failed_files.append(failed_file)
-        else:
-            print(f"Downloading: {file_name}")
-            util.log(f"Downloading: {file_name}")
-            util.download_from_url(url,"../../output/",file_name)
-        
-        min += 1
+    loader = input("Enter Loader for the Mods: ")
+    util.log(f"Loader: {loader}\n")
 
-    if len(failed_downloadhashes) > 0:
-        print("Failed to download:")
-        util.log("Failed to download:")
-        for i in failed_files:
-            print(i)
-            util.log(i) 
-        
-        input("\nPress Enter to continue ")
+    modrinthapi.download_multiple_hashes(all_hashes,all_hashes_filenames,version,loader)
 
 def cli_main():
     util.cls()
 
-    print("Welcome to the Modrinth CLI")
+    print("Welcome to the Modupdater CLI")
     print("[1] Update Mods")
-    print("[2] Exit")
+    print("[2] Update Modpack")
+    print("[3] Exit")
     option = input("Enter your choice: ")
 
     if option == "1":
         cli_update_mods()
-        return True
+        input("\nPress Enter to continue")
+        return False
     elif option == "2":
+        cli_update_modpack()
+        input("\nPress Enter to continue")
+        return False
+    elif option == "3":
         return False        

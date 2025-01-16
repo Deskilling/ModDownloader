@@ -1,9 +1,12 @@
 ﻿import cli_menu
 from libaries import util
+from libaries import modrinthapi
 
 def main():
     util.change_exec_dir()
     util.create_logfile()
+
+    util.cls()
 
     running = True
 
