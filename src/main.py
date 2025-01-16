@@ -1,4 +1,4 @@
-﻿import cli_menu
+﻿import cli_menu, tgui_menu
 from libaries import util
 from libaries import modrinthapi
 
@@ -8,7 +8,9 @@ def main():
 
     util.cls()
 
-    running = True
+    tgui_menu.main()
+
+    running = False
 
     while running:
         should_run = cli_menu.cli_main()

@@ -10,18 +10,20 @@ def choose_modpack():
     util.log(f"All modpacks found {num_modpacks} found: {all_modpacks}")
 
     if num_modpacks == 0:
+        util.cls()
         util.log("No modpacks found")
         print("No modpacks found")
-        return False
+        return None
+        
     elif num_modpacks == 1:
         util.log("Only one modpack found")
-        return all_modpacks[0]
+        return all_modpacks
     elif num_modpacks > 1:
         util.log("Multiple modpacks found")
         for i in range(num_modpacks):
             print(f"[{i+1}] {all_modpacks[i]}")
-        option = input("Enter the number of the modpack you want to update: ")
-        return all_modpacks[int(option)-1]
+        #option = input("Enter the number of the modpack you want to update: ")
+        return all_modpacks
 
 def extract_modpack(modpack):
     util.log("Extracting modpack")
