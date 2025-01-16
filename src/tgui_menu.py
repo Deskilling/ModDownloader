@@ -17,9 +17,6 @@ def download_and_show_info(content_frame, all_hashes, all_hashes_filenames, vers
     progressbar = customtkinter.CTkProgressBar(content_frame, orientation="horizontal")
     progressbar.pack(pady=10)
 
-    #status_label = customtkinter.CTkLabel(content_frame, text="")
-    #status_label.pack(pady=10)
-
     util.check_path("../../output")
     util.del_dir("../../output")
     util.check_path("../../output")
@@ -44,21 +41,21 @@ def download_and_show_info(content_frame, all_hashes, all_hashes_filenames, vers
 
         if url is None or file_name is None:
             failed_file = all_hashes_filenames[all_hashes.index(i)]
-            
-            #status_label.configure(text=f"Error Downloading {file_name}")
-            #content_frame.update_idletasks()
-            
+            status_downloading = customtkinter.CTkLabel(content_frame, text=f"Error Downloading {file_name}")
+            status_downloading.pack(pady=10)
             util.log(f"Error downloading: {failed_file}")
             util.log(f"Error downloading hash: {i}\n")
             failed_downloadhashes.append(i)
             failed_files.append(failed_file)
         else:
-            #status_label.configure(text=f"Downloading {file_name}")
-            #content_frame.update_idletasks()
-
+            status_downloading = customtkinter.CTkLabel(content_frame, text=f"Downloaded {file_name}")
+            status_downloading.pack(pady=10)
             util.log(f"Downloading: {file_name}\n")
             util.download_from_url(url,"../../output/",file_name)
 
+        currently_downloading.destroy()
+        if "status_downloading" in locals():
+            status_downloading.destroy()
         min += 1
 
 
