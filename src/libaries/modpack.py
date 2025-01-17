@@ -14,10 +14,11 @@ def choose_modpack():
         util.log("No modpacks found")
         print("No modpacks found")
         return None
-        
+
     elif num_modpacks == 1:
         util.log("Only one modpack found")
         return all_modpacks
+
     elif num_modpacks > 1:
         util.log("Multiple modpacks found")
         for i in range(num_modpacks):

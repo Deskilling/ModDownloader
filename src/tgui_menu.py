@@ -1,21 +1,27 @@
 import tkinter
 import tkinter.messagebox
 import customtkinter
+import threading
 from libaries import util, modrinthapi, modpack
-from time import sleep
 
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
 
+
 def download_and_show_info(content_frame, all_hashes, all_hashes_filenames, version, loader):
+    util.cls()
+
     for widget in content_frame.winfo_children():
         widget.destroy()
 
     where = customtkinter.CTkLabel(content_frame, text=f"Downloading", font=("Arial", 20))
     where.pack(pady=10)
 
-    progressbar = customtkinter.CTkProgressBar(content_frame, orientation="horizontal")
-    progressbar.pack(pady=10)
+    progressbar = customtkinter.CTkProgressBar(content_frame, width=300, height=10, border_width=2, corner_radius=10, orientation="horizontal", mode="determinate")
+    progressbar.pack(pady=20)
+
+    downloading_label = customtkinter.CTkLabel(content_frame, text=f"")
+    downloading_label.pack(pady=0)
 
     util.check_path("../../output")
     util.del_dir("../../output")
@@ -23,42 +29,57 @@ def download_and_show_info(content_frame, all_hashes, all_hashes_filenames, vers
 
     failed_downloadhashes = []
     failed_files = []
+    
+    minimal = 1
+    maximal = len(all_hashes)
 
-    min = 1
-    max = len(all_hashes)
+    progressbar.set(0)
 
-    for i in all_hashes:
-        util.cls()
-        
-        print(f"[{min}] {min*"#"}{(max-min)*"."} [{max}]")
-        print(f"Current Mod: {all_hashes_filenames[min-1]}")
+    def update_progress(i):
+        progress = (i + 1) / maximal
+        progressbar.set(progress)
+        content_frame.update_idletasks()
 
+    def threaded_download():
+        nonlocal minimal, where, progressbar, downloading_label
+        for i, file_hash in enumerate(all_hashes):
+            util.cls()
+            update_progress(i)
+            print(f"[{minimal}] {minimal * '#'}{(maximal - minimal) * '.'} [{maximal}]")
+            print(f"Current Mod: {all_hashes_filenames[minimal - 1]}")
 
-        url, file_name = modrinthapi.get_download_via_hash(i,version,loader)
+            url, file_name = modrinthapi.get_download_via_hash(file_hash, version, loader)
 
-        currently_downloading = customtkinter.CTkLabel(content_frame, text=f"Downloading {file_name}")
-        currently_downloading.pack(pady=10)
+            if url is None or file_name is None:
+                failed_file = all_hashes_filenames[i]
+                util.log(f"Error downloading: {failed_file}")
+                util.log(f"Error downloading hash: {file_hash}\n")
+                failed_downloadhashes.append(file_hash)
+                failed_files.append(failed_file)
 
-        if url is None or file_name is None:
-            failed_file = all_hashes_filenames[all_hashes.index(i)]
-            status_downloading = customtkinter.CTkLabel(content_frame, text=f"Error Downloading {file_name}")
-            status_downloading.pack(pady=10)
-            util.log(f"Error downloading: {failed_file}")
-            util.log(f"Error downloading hash: {i}\n")
-            failed_downloadhashes.append(i)
-            failed_files.append(failed_file)
-        else:
-            status_downloading = customtkinter.CTkLabel(content_frame, text=f"Downloaded {file_name}")
-            status_downloading.pack(pady=10)
-            util.log(f"Downloading: {file_name}\n")
-            util.download_from_url(url,"../../output/",file_name)
+                downloading_label.destroy()
+                downloading_label = customtkinter.CTkLabel(content_frame, text=f"{failed_file}")
+                downloading_label.pack(pady=10)
 
-        currently_downloading.destroy()
-        if "status_downloading" in locals():
-            status_downloading.destroy()
-        min += 1
+            else:
+                util.log(f"Downloading: {file_name}\n")
+                util.download_from_url(url, "../../output/", file_name)
 
+                downloading_label.destroy()
+                downloading_label = customtkinter.CTkLabel(content_frame, text=f"{file_name}")
+                downloading_label.pack(pady=10)
 
+            minimal += 1
+
+        print("Download complete!")
+        #!??!
+        progressbar.destroy()
+
+        for b in failed_files:
+            failed_files_label = customtkinter.CTkLabel(content_frame, text=f"{b}")
+            failed_files_label.pack(pady=10)
+
+    threading.Thread(target=threaded_download, daemon=True).start()
 
 # Für Mods
 def get_version_and_loader_update_mods(content_frame, callback):
@@ -190,8 +211,3 @@ def main():
     exit_button.pack(pady=10)
 
     root.mainloop()
-
-if __name__ == '__main__':
-    util.change_exec_dir()
-    util.create_logfile()
-    main()

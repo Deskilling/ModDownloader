@@ -35,6 +35,10 @@ def del_dir(path):
             del_dir(i_path)
     os.rmdir(path)
 
+def all_folders():
+    check_path("../../modpacks")
+    check_path("../../mods_to_update")
+
 def sha1sum(filename,path):
     filename = path + filename
     with open(filename, "rb", buffering=0) as f:

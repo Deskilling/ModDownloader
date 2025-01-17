@@ -41,12 +41,18 @@ def cli_update_modpack():
     util.cls()
     util.check_path("../../modpacks")
     util.log("modpacks folder checked or created")
-    
-    # TODO - REIMPLEMENT DUE THE CHANGES IN modpack.py
-    # TODO - REIMPLEMENT DUE THE CHANGES IN modpack.py
-    # TODO - REIMPLEMENT DUE THE CHANGES IN modpack.py
 
     choosen_modpack = modpack.choose_modpack()
+    if len(choosen_modpack) > 1: 
+        for i in choosen_modpack:
+            print(f"[{choosen_modpack.index(i)+1}] {i}")
+        
+        option = int(input("Enter Number: ")) - 1
+        choosen_modpack = choosen_modpack[option]
+    else:
+        # Housekeeping
+        choosen_modpack = choosen_modpack[0]
+    
     modpack.extract_modpack(choosen_modpack)
 
     util.log("Getting all hashes")
