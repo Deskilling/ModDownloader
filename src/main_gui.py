@@ -1,17 +1,18 @@
-﻿import cli_menu
 from libaries import util
-from libaries import modrinthapi
+import tgui_menu
 
 def main():
     util.change_exec_dir()
     util.create_logfile()
+    
+    util.all_folders()  
 
     util.cls()
 
     running = True
 
     while running:
-        should_run = cli_menu.cli_main()
+        should_run = tgui_menu.main()
         if not should_run:
             running = False
         else:

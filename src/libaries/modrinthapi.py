@@ -21,6 +21,7 @@ def latest_versions():
     versions = response["game_versions"]
     versions = list(filter(lambda x: x.startswith("1."), versions))
     versions.sort() 
+    versions.reverse()
 
     extracted_versions = []
 
