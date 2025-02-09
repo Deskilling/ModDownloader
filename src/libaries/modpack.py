@@ -12,7 +12,7 @@ def choose_modpack():
     if num_modpacks == 0:
         util.cls()
         util.log("No modpacks found")
-        print("No modpacks found")
+        #print("No modpacks found")
         return None
 
     elif num_modpacks == 1:

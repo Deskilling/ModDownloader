@@ -43,6 +43,9 @@ def cli_update_modpack():
     util.log("modpacks folder checked or created")
 
     choosen_modpack = modpack.choose_modpack()
+    if choosen_modpack == None:
+        print("No modspacks found add a modpack to modpacks/")
+        return 
     if len(choosen_modpack) > 1: 
         for i in choosen_modpack:
             print(f"[{choosen_modpack.index(i)+1}] {i}")
