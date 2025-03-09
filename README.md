@@ -1,8 +1,11 @@
-# Mod Downloader
+# THIS PROJECT IS ABANDONED
+A better version of this project is available [here](https://github.com/Deskilling/moddownloader-go).
+
+## Mod Downloader
 A very simple Minecraft Mod Downloader using the Modrinth API.
 Spaghetti Code included
 
-## Usage
+### Usage
 
 1. Install [Python 3.13.1](https://www.python.org/downloads/release/python-3131/)  
    Make sure to check **"Add to PATH"** during installation.
